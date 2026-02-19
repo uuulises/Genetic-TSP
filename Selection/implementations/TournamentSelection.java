@@ -20,10 +20,11 @@ public class TournamentSelection implements Selection {
         }
 
         for (int i = 0; i < tournamentSize; i++) { //TODO no se controla si se repiten individuos, no está necesariamente mal, es una desición
-            double currentFitness = fitness[(int) (Math.random() * populationSize)];
+            int currentIndex = (int) (Math.random() * populationSize);
+            double currentFitness = fitness[currentIndex];
             if (currentFitness > bestFitness) {
                 bestFitness = currentFitness;
-                bestIndex = i;
+                bestIndex = currentIndex;
             }
         }
 

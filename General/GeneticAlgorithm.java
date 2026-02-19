@@ -105,7 +105,9 @@ public class GeneticAlgorithm {
         return 100.0 / totalCost;
     }
 
-    public void run(int maxGenerations, int maxConsecutiveFitness, ArrayList<int[]> population, double[] fitness) {
+    public ArrayList<int[]> run(int maxGenerations, int maxConsecutiveFitness, ArrayList<int[]> initialPopulation, double[] fitness) {
+
+        ArrayList<int[]> population = new ArrayList<>(initialPopulation);
 
         int generation = 0;
         int consecuentiveFitness = 0;
@@ -138,7 +140,7 @@ public class GeneticAlgorithm {
             }
 
         }
-
+        return population;
     }
 
 }

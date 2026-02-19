@@ -23,13 +23,13 @@ public class Main {
         
         geneticAlgorithm.initializeComponents(CITIES);
 
-        ArrayList<int[]> population = geneticAlgorithm.initializePopulation(POPULATION_SIZE, CITIES);
+        ArrayList<int[]> initialPopulation = geneticAlgorithm.initializePopulation(POPULATION_SIZE, CITIES);
         
-        double[] fitness = geneticAlgorithm.evaluatePopulation(POPULATION_SIZE, population);
+        double[] fitness = geneticAlgorithm.evaluatePopulation(POPULATION_SIZE, initialPopulation);
         
-        geneticAlgorithm.run(MAX_GENERATIONS, MAX_CONSECUTIVE_FITNESS, population, fitness);
+        ArrayList<int[]> finalPopulation = geneticAlgorithm.run(MAX_GENERATIONS, MAX_CONSECUTIVE_FITNESS, initialPopulation, fitness);
 
-        System.out.println("Best fitness: " + printArray(population.get(0)) + " " + geneticAlgorithm.calculateFitness(population.get(0)));
+        System.out.println("Best fitness: " + printArray(finalPopulation.get(0)) + " " + geneticAlgorithm.calculateFitness(finalPopulation.get(0)));
     }
 
     private static String printArray(int[] array) {
