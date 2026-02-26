@@ -14,11 +14,26 @@ public final class Costs {
         
     }
 
+    private Costs(int[][] matrix) {
+        this.costMatrix = matrix;
+    }
+
     public static Costs getInstance(int size) {
         if (instance == null) {
             instance = new Costs(size);
         }
         return instance;
+    }
+
+    public static Costs getInstance(int[][] matrix) {
+        if (instance == null) {
+            instance = new Costs(matrix);
+        }
+        return instance;
+    }
+
+    public static void resetInstance() {
+        instance = null;
     }
 
     public int getCost(int from, int to) {
