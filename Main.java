@@ -11,7 +11,7 @@ import SurvivorSelection.implementations.SteadyStateSurvivorSelection;
 
 public class Main {
     // Archivo de instancia a resolver
-    private final static String INSTANCE_FILE = "d:/Usuario/Downloads/instancias-TSP/br17.atsp";
+    private final static String INSTANCE_FILE = "instancias-TSP/br17.atsp";
     
     private final static int POPULATION_SIZE = 200;
     private final static int MAX_GENERATIONS = 2000;
