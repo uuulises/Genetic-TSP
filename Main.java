@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.io.IOException;
 
-import Crossover.implementations.OrderCrossover;
+import Crossover.implementations.PartiallyMappedCrossover;
 import General.Costs;
 import General.GeneticAlgorithm;
 import General.InstanceLoader;
@@ -42,7 +42,7 @@ public class Main {
             
             GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(
                 new TournamentSelection(TOURNAMENT_SIZE), 
-                new OrderCrossover(), 
+                new PartiallyMappedCrossover(), 
                 new SwapMutation(), 
                 new SteadyStateSurvivorSelection()
             );
