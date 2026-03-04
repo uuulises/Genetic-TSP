@@ -1,7 +1,7 @@
 package Crossover.implementations;
 
 import java.util.ArrayList;
-
+import java.util.Arrays; // Necesario para Arrays.fill
 import Crossover.Crossover;
 
 public class PartiallyMappedCrossover implements Crossover {
@@ -11,9 +11,11 @@ public class PartiallyMappedCrossover implements Crossover {
         int length = parent1.length;
 
         int[] child1 = new int[length];
-        boolean[] taken1 = new boolean[length];
         int[] child2 = new int[length];
-        boolean[] taken2 = new boolean[length];
+        
+        // IMPORTANTE: Inicializar con -1, porque 0 es una ciudad válida
+        Arrays.fill(child1, -1);
+        Arrays.fill(child2, -1);
 
         int pos1 = (int) (Math.random() * length);
         int pos2 = (int) (Math.random() * length);
@@ -24,61 +26,37 @@ public class PartiallyMappedCrossover implements Crossover {
             pos2 = temp;
         }
     
+        // Copia del segmento
         for (int i = pos1; i <= pos2; i++) {
             child1[i] = parent1[i];
-            taken1[child1[i]] = true;
-
             child2[i] = parent2[i];
-            taken2[child2[i]] = true;
         }
 
+        // Mapeo de valores
         for (int i = pos1; i <= pos2; i++) {
-
-            // Recorro en la sección copiada en el otro padre, buscando valores que no esten en el hijo
-            if (!taken1[parent2[i]]) {
-                int currentPos = i;
-
-                // Busco que la posición final del valor encontrado caiga fuera de la sección copiada
-                while (currentPos >= pos1 && currentPos <= pos2) {
-                    // Mientras caiga adentro, busco otra, obteniendo la posición del valor encontrado en el otro padre
-                    currentPos = findIndex(parent1, parent2[currentPos]);
-                }
-                child1[currentPos] = parent2[i];
-                taken1[parent2[i]] = true;
-            }
-
-            if (!taken2[parent1[i]]) {
-                int currentPos = i;
+            // Para hijo 1
+            if (!contains(child1, pos1, pos2, parent2[i])) {
+                int currentPos = findIndex(parent2, parent1[i]);
                 while (currentPos >= pos1 && currentPos <= pos2) {
                     currentPos = findIndex(parent2, parent1[currentPos]);
                 }
+                child1[currentPos] = parent2[i];
+            }
+
+            // Para hijo 2
+            if (!contains(child2, pos1, pos2, parent1[i])) {
+                int currentPos = findIndex(parent1, parent2[i]);
+                while (currentPos >= pos1 && currentPos <= pos2) {
+                    currentPos = findIndex(parent1, parent2[currentPos]);
+                }
                 child2[currentPos] = parent1[i];
-                taken2[parent1[i]] = true;
             }
         }
 
+        // Rellenar lo que falta
         for (int i = 0; i < length; i++) {
-            // Recorro el otro padre tomando solo los valores que no existen en el hijo
-            if (!taken1[parent2[i]]) {
-                // Si es un valor nuevo, lo agrego al hijo en la primera posición vacía encontrada
-                for (int j = 0; j < length; j++) {
-                    if (!taken1[j]) {
-                        child1[j] = parent2[i];
-                        taken1[j] = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!taken2[parent1[i]]) {
-                for (int j = 0; j < length; j++) {
-                    if (!taken2[j]) {
-                        child2[j] = parent1[i];
-                        taken2[j] = true;
-                        break;
-                    }
-                }
-            }
+            if (child1[i] == -1) child1[i] = parent2[i];
+            if (child2[i] == -1) child2[i] = parent1[i];
         }
 
         ArrayList<int[]> children = new ArrayList<>();
@@ -86,13 +64,19 @@ public class PartiallyMappedCrossover implements Crossover {
         children.add(child2);
         return children;
     }
+
+    // Método auxiliar para evitar el error de "ya existe en el segmento"
+    private boolean contains(int[] child, int start, int end, int value) {
+        for (int i = start; i <= end; i++) {
+            if (child[i] == value) return true;
+        }
+        return false;
+    }
     
     private int findIndex(int[] array, int value) {
         for (int i = 0; i < array.length; i++) {
-            if (array[i] == value) {
-                return i;
-            }
+            if (array[i] == value) return i;
         }
-        return -1; // Se asume que el valor siempre estará presente en el array, por lo que este caso no debería ocurrir
+        return -1;
     }
 }
