@@ -1,8 +1,10 @@
 package General;
 public final class Costs {
+
     private static Costs instance;
     public int[][] costMatrix;
 
+    // Creación de la matriz de costos aleatoria
     private Costs(int size) {
         costMatrix = new int[size][size];
         
@@ -13,11 +15,6 @@ public final class Costs {
         }
         
     }
-
-    private Costs(int[][] matrix) {
-        this.costMatrix = matrix;
-    }
-
     public static Costs getInstance(int size) {
         if (instance == null) {
             instance = new Costs(size);
@@ -25,9 +22,21 @@ public final class Costs {
         return instance;
     }
 
+    // Creación de la matriz de costos a partir de una matriz dada
+    private Costs(int[][] matrix) {
+        this.costMatrix = matrix;
+    }
     public static Costs getInstance(int[][] matrix) {
         if (instance == null) {
             instance = new Costs(matrix);
+        }
+        return instance;
+    }
+
+    // Obtención de la matriz de costos, si existe
+    public static Costs getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("Costs instance not initialized. Call getInstance with parameters first.");
         }
         return instance;
     }

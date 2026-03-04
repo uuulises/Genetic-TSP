@@ -8,8 +8,8 @@ import Crossover.*;
 import Crossover.implementations.*;
 import Mutation.*;
 import Mutation.implementations.*;
-import Selection.*;
-import Selection.implementations.*;
+import ParentSelection.*;
+import ParentSelection.implementations.*;
 import SurvivorSelection.*;
 import SurvivorSelection.implementations.*;
 
@@ -51,7 +51,7 @@ public class ExperimentRunner {
             Costs.getInstance(instance.costMatrix);
 
             // 2. Definición de Implementaciones (Aquí incluyo varios Tournament)
-            List<Selection> selections = Arrays.asList(
+            List<ParentSelection> selections = Arrays.asList(
                 new RouletteWheelSelection(), 
                 new TournamentSelection(3),   // Torneo pequeño
                 new TournamentSelection(10),  // Torneo medio
@@ -59,7 +59,7 @@ public class ExperimentRunner {
             );
             List<Crossover> crossovers = Arrays.asList(new OrderCrossover(), new PartiallyMappedCrossover());
             List<Mutation> mutations = Arrays.asList(new SwapMutation(), new ReversalMutation());
-            List<SurvivorSelection> survivors = Arrays.asList(new FullGenReplacement(), new SteadyStateSurvivorSelection());
+            List<SurvivorSelection> survivors = Arrays.asList(new FullGenReplacement(), new ElitismBasedReplacement());
 
             // 3. Parámetros de Población
             int[][] parameterSets = {{100, 1000}, {200, 2000}};
@@ -67,7 +67,7 @@ public class ExperimentRunner {
             System.out.println("Iniciando batería de tests...");
 
             for (int[] params : parameterSets) {
-                for (Selection sel : selections) {
+                for (ParentSelection sel : selections) {
                     for (Crossover cross : crossovers) {
                         for (Mutation mut : mutations) {
                             for (SurvivorSelection surv : survivors) {
@@ -82,16 +82,13 @@ public class ExperimentRunner {
 
                                 for (int run = 1; run <= RUNS_PER_CONFIG; run++) {
                                     GeneticAlgorithm ga = new GeneticAlgorithm(sel, cross, mut, surv);
-                                    ga.initializeComponents(cities);
                                     
                                     long startTime = System.currentTimeMillis();
-                                    ArrayList<int[]> pop = ga.initializePopulation(params[0], cities);
-                                    double[] fitness = ga.evaluatePopulation(params[0], pop);
                                     
-                                    ArrayList<int[]> result = ga.run(params[1], 80, pop, fitness);
+                                    ArrayList<int[]> result = ga.run(params[1], 80, params[0], cities);
                                     long endTime = System.currentTimeMillis();
                                     
-                                    double bestFit = ga.calculateFitness(result.get(0));
+                                    double bestFit = FitnessCalculator.calculate(result.get(0));
                                     
                                     // Guardar fila individual
                                     writer.printf("%s;%s;%s;%s;%s;%d;%d;%d;%.2f;%d%n",
@@ -127,7 +124,7 @@ public class ExperimentRunner {
     }
 
     // Helper para extraer el tamaño del torneo por Reflection (ya que es privado en tu clase)
-    private static int getTournamentSize(Selection sel) {
+    private static int getTournamentSize(ParentSelection sel) {
         try {
             java.lang.reflect.Field field = sel.getClass().getDeclaredField("tournamentSize");
             field.setAccessible(true);

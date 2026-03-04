@@ -1,9 +1,9 @@
-package Selection.implementations;
+package ParentSelection.implementations;
 import java.util.ArrayList;
 
-import Selection.Selection;
+import ParentSelection.ParentSelection;
 
-public class TournamentSelection implements Selection {
+public class TournamentSelection implements ParentSelection {
     private int tournamentSize;
 
     public TournamentSelection(int tournamentSize) {
@@ -11,9 +11,11 @@ public class TournamentSelection implements Selection {
     }
 
     @Override
-    public int[] select(ArrayList<int[]> population, int populationSize, double[] fitness) {
+    public int[] select(ArrayList<int[]> population, boolean[] selected, int populationSize, double[] fitness) {
         int bestIndex = -1;
         double bestFitness = Double.NEGATIVE_INFINITY;
+
+        populationSize = countNotSelected(population,selected);
 
         if(populationSize < tournamentSize) {
             tournamentSize = populationSize;
@@ -28,8 +30,19 @@ public class TournamentSelection implements Selection {
             }
         }
 
-        return population.remove(bestIndex);
+        selected[bestIndex] = true;
+        return population.get(bestIndex);
         
+    }
+
+    private int countNotSelected(ArrayList<int[]> population, boolean[] selected) {
+        int count = 0;
+        for (int i = 0; i < population.size(); i++) {
+            if (!selected[i]) {
+                count++;
+            }
+        }
+        return count;
     }
     
 }
