@@ -44,5 +44,13 @@ public class TournamentSelection implements ParentSelection {
         }
         return count;
     }
+
+    public int getTournamentSize() {
+        return tournamentSize;
+    }
+
+    public void setTournamentSize(int tournamentSize) {
+        this.tournamentSize = tournamentSize;
+    }
     
 }

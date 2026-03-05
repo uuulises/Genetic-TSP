@@ -5,10 +5,14 @@ import java.util.Arrays;
 
 import genetictsp.algorithm.crossover.Crossover;
 
-public class PartiallyMappedCrossover implements Crossover {
+public class PartiallyMappedCrossover extends Crossover {
+
+    public PartiallyMappedCrossover(double probability) {
+        super(probability);
+    }
 
     @Override
-    public ArrayList<int[]> crossover(int[] parent1, int[] parent2) {
+    protected ArrayList<int[]> performCrossover(int[] parent1, int[] parent2) {
         int length = parent1.length;
 
         int[] child1 = new int[length];

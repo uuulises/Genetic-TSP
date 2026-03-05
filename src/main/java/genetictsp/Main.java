@@ -40,8 +40,8 @@ public class Main {
         Costs.getInstance(instance.costMatrix);
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(
             new TournamentSelection(TOURNAMENT_SIZE), 
-            new PartiallyMappedCrossover(), 
-            new SwapMutation(), 
+            new PartiallyMappedCrossover(0.8), 
+            new SwapMutation(0.3), 
             new SteadyStateReplacement(STEADY_STATE_REPLACEMENTS)
         );
             

@@ -3,9 +3,14 @@ import java.util.ArrayList;
 
 import genetictsp.algorithm.crossover.Crossover;
 
-public class OrderCrossover implements Crossover {
+public class OrderCrossover extends Crossover {
+
+    public OrderCrossover(double probability) {
+        super(probability);
+    }
+
     @Override
-    public ArrayList<int[]> crossover(int[] parent1, int[] parent2) {
+    protected ArrayList<int[]> performCrossover(int[] parent1, int[] parent2) {
         int length = parent1.length;
 
         int[] child1 = new int[length];

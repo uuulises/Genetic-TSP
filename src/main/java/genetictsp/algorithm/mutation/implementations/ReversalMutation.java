@@ -2,9 +2,13 @@ package genetictsp.algorithm.mutation.implementations;
 
 import genetictsp.algorithm.mutation.Mutation;
 
-public class ReversalMutation implements Mutation {
+public class ReversalMutation extends Mutation {
+    public ReversalMutation(double probability) {
+        super(probability);
+    }
+
     @Override
-    public void mutate(int[] individual) {
+    protected void performMutation(int[] individual) {
         int length = individual.length;
         int index1 = (int) (Math.random() * length);
         int index2 = (int) (Math.random() * length);

@@ -2,9 +2,13 @@ package genetictsp.algorithm.mutation.implementations;
 
 import genetictsp.algorithm.mutation.Mutation;
 
-public class SwapMutation implements Mutation {
+public class SwapMutation extends Mutation {
+    public SwapMutation(double probability) {
+        super(probability);
+    }
+
     @Override
-    public void mutate(int[] individual) {
+    protected void performMutation(int[] individual) {
         int length = individual.length;
 
         int pos1 = (int) (Math.random() * length);
