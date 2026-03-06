@@ -22,5 +22,10 @@ public class SwapMutation extends Mutation {
         individual[pos1] = individual[pos2];
         individual[pos2] = temp;
     }
+
+    @Override
+    public String getName() {
+        return "Swap";
+    }
     
 }

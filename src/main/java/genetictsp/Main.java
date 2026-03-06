@@ -20,7 +20,6 @@ public class Main {
     // Parámetros generales del algoritmo genético
     private final static int POPULATION_SIZE = 200;
     private final static int MAX_GENERATIONS = 2000;
-    private final static int MAX_CONSECUTIVE_FITNESS = 80;
 
     // Parámetros específicos para los componentes
     private final static int TOURNAMENT_SIZE = 10;
@@ -46,7 +45,7 @@ public class Main {
         );
             
         // Ejecución del algoritmo genético
-        ArrayList<int[]> finalPopulation = geneticAlgorithm.run(MAX_GENERATIONS, MAX_CONSECUTIVE_FITNESS, POPULATION_SIZE, instance.dimension);
+        ArrayList<int[]> finalPopulation = geneticAlgorithm.run(MAX_GENERATIONS, POPULATION_SIZE, instance.dimension);
 
         // Impresión de resultados
         System.out.println("=== TSP Genetic Algorithm ===");

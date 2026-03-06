@@ -24,4 +24,6 @@ public abstract class Crossover {
     }
 
     protected abstract ArrayList<int[]> performCrossover(int[] parent1, int[] parent2);
+
+    public abstract String getName();
 }

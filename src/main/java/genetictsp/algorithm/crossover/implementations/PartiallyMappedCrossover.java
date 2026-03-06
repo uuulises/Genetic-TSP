@@ -84,4 +84,9 @@ public class PartiallyMappedCrossover extends Crossover {
         }
         return -1;
     }
+
+    @Override
+    public String getName() {
+        return "PMX";
+    }
 }

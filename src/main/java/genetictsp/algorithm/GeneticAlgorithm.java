@@ -19,15 +19,13 @@ public class GeneticAlgorithm {
         this.survivorSelection = survivorSelection;
     }
 
-    public ArrayList<int[]> run(int maxGenerations, int maxConsecutiveFitness, int populationSize, int cities) {
+    public ArrayList<int[]> run(int maxGenerations, int populationSize, int cities) {
 
         ArrayList<int[]> population = PopulationManager.initializePopulation(populationSize, cities);
         double[] fitness = PopulationManager.evaluatePopulation(populationSize, population);
 
         int generation = 0;
-        int consecuentiveFitness = 0;
-        double bestFitness = 0;
-        while (generation < maxGenerations && consecuentiveFitness < maxConsecutiveFitness) {
+        while (generation < maxGenerations) {
             generation++;
 
             ArrayList<int[]> parents = new ArrayList<>(population);
@@ -45,15 +43,6 @@ public class GeneticAlgorithm {
             }
             
             population = survivorSelection.replace(population.size(), population, children);
-
-            double currentBestFitness = FitnessCalculator.calculate(population.get(0));
-
-            if (currentBestFitness > bestFitness) {
-                bestFitness = currentBestFitness;
-                consecuentiveFitness = 0;
-            } else {
-                consecuentiveFitness++;
-            }
 
         }
         return population;

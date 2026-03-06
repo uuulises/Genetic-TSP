@@ -22,4 +22,9 @@ public class ElitismBasedReplacement implements SurvivorSelection {
 
         return population;
     }
+
+    @Override
+    public String getName() {
+        return "Elitism";
+    }
 }

@@ -18,4 +18,6 @@ public abstract class Mutation {
     }
 
     protected abstract void performMutation(int[] individual);
+
+    public abstract String getName();
 }

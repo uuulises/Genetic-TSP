@@ -59,4 +59,9 @@ public class OrderCrossover extends Crossover {
         children.add(child2);
         return children;
     }
+
+    @Override
+    public String getName() {
+        return "Order";
+    }
 }

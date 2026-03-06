@@ -41,8 +41,9 @@ public class SteadyStateReplacement implements SurvivorSelection {
         return population;
     }
 
-    public void setNumToReplace(int steadyStateSize) {
-        this.numReplacements = steadyStateSize;
+    @Override
+    public String getName() {
+        return "SS-" + numReplacements;
     }
     
 }

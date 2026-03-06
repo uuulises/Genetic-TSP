@@ -30,4 +30,9 @@ public class ReversalMutation extends Mutation {
             
         }
     }
+
+    @Override
+    public String getName() {
+        return "Reversal";
+    }
 }

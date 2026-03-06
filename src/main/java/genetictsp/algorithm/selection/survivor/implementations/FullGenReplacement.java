@@ -9,4 +9,9 @@ public class FullGenReplacement implements SurvivorSelection {
     public ArrayList<int[]> replace(int populationLength, ArrayList<int[]> parents, ArrayList<int[]> children) {
         return new ArrayList<>(children);
     }
+
+    @Override
+    public String getName() {
+        return "FullGen";
+    }
 }

@@ -40,4 +40,8 @@ public class RouletteWheelSelection implements ParentSelection {
 
         return population.get(populationSize - 1);
     }
+
+    public String getName() {
+        return "Roulette";
+    }
 }

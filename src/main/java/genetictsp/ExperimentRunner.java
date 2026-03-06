@@ -55,7 +55,11 @@ public class ExperimentRunner {
             Costs.getInstance(instance.costMatrix);
 
             // 2. Definición de operadores y complementos, junto con los parámetros pertinentes
-            List<ParentSelection> parentSelections = Arrays.asList(new RouletteWheelSelection(), new TournamentSelection(1)); // Cambiamos el tamaño del torneo luego, proporcionalmente al tamaño de la población
+            List<ParentSelection> parentSelections = Arrays.asList(
+                new RouletteWheelSelection(), 
+                new TournamentSelection(2),
+                new TournamentSelection(3)
+            );
             List<Crossover> crossovers = Arrays.asList(
                 new OrderCrossover(0.6), 
                 new OrderCrossover(0.8),
@@ -63,66 +67,72 @@ public class ExperimentRunner {
                 new PartiallyMappedCrossover(0.8)
             );
             List<Mutation> mutations = Arrays.asList(
-                new SwapMutation(0.1), 
-                new SwapMutation(0.3),
-                new ReversalMutation(0.1),
-                new ReversalMutation(0.3));
-            List<SurvivorSelection> survivorSelections = Arrays.asList(new FullGenReplacement(), new ElitismBasedReplacement(), new SteadyStateReplacement(1));
+                new SwapMutation(0.05), 
+                new SwapMutation(0.2),
+                new ReversalMutation(0.05),
+                new ReversalMutation(0.2)
+            );
+            List<SurvivorSelection> survivorSelections = Arrays.asList(
+                new FullGenReplacement(), 
+                new ElitismBasedReplacement(), 
+                new SteadyStateReplacement(2),
+                new SteadyStateReplacement(20)
+            );
 
             // 3. Parámetros 
             int[] populationSizes = {100, 200};
-            int[] maxGenerations = {1000, 2000};
-            int[] maxConsecutiveFitnessesWithoutImprovement = {50, 200};
+            int[] maxGenerations = {1000, 2000}; 
 
-            System.out.println("Iniciando batería de tests...");
+            System.out.println("Iniciando tests...");
 
             for (int popSize : populationSizes) {
-                int tournamentSize = Math.max(2, popSize / 10); // El 10% de la población, mínimo 2
-                int steadyStateSize = Math.max(1, popSize / 2); // El 50% de la población, mínimo 1
                 for (int maxGen : maxGenerations) {
-                    for (int maxNoImprove : maxConsecutiveFitnessesWithoutImprovement) {
-                        for (ParentSelection sel : parentSelections) {
-                            for (Crossover cross : crossovers) {
-                                for (Mutation mut : mutations) {
-                                    for (SurvivorSelection surv : survivorSelections) {
-                                        String selName;
-                                        if (sel instanceof TournamentSelection) {
-                                            ((TournamentSelection) sel).setTournamentSize(tournamentSize);
-                                            selName = "Tournament_Size_" + tournamentSize;
-                                        } else {
-                                            selName = "Roulette";
-                                        }
-                                        if (surv instanceof SteadyStateReplacement) {
-                                            ((SteadyStateReplacement) surv).setNumToReplace(steadyStateSize);
-                                        }
+                    for (ParentSelection sel : parentSelections) {
+                        for (Crossover cross : crossovers) {
+                            for (Mutation mut : mutations) {
+                                for (SurvivorSelection surv : survivorSelections) {
 
-                                        String configID = String.format("%s+%s+%s+%s+P%d", 
-                                            selName, cross.getClass().getSimpleName(), mut.getClass().getSimpleName(), 
-                                            surv.getClass().getSimpleName(), popSize);
+                                    String configID = String.format("P%d+G%d+%s+%s+%s+%s", 
+                                        popSize,
+                                        maxGen,
+                                        sel.getName(), 
+                                        cross.getName(), 
+                                        mut.getName(), 
+                                        surv.getName()
+                                    );
                                         
-                                        ConfigResult stat = new ConfigResult(configID);
+                                    ConfigResult stat = new ConfigResult(configID);
 
-                                        for (int run = 1; run <= RUNS_PER_CONFIG; run++) {
-                                            GeneticAlgorithm ga = new GeneticAlgorithm(sel, cross, mut, surv);
+                                    for (int run = 1; run <= RUNS_PER_CONFIG; run++) {
+                                        GeneticAlgorithm ga = new GeneticAlgorithm(sel, cross, mut, surv);
                                             
-                                            long startTime = System.currentTimeMillis();
+                                        long startTime = System.currentTimeMillis();
                                             
-                                            ArrayList<int[]> result = ga.run(maxGen, maxNoImprove, popSize, cities);
-                                            long endTime = System.currentTimeMillis();
+                                        ArrayList<int[]> result = ga.run(maxGen, popSize, cities);
+                                        long endTime = System.currentTimeMillis();
                                             
-                                            double bestFit = FitnessCalculator.calculate(result.get(0));
+                                        double bestFit = FitnessCalculator.calculate(result.get(0));
+                                        double cost = 100 / bestFit; // Convertir fitness a costo para interpretación
                                             
-                                            // Guardar fila individual
-                                            writer.printf("%s;%s;%s;%s;%s;%d;%d;%d;%.2f;%d%n",
-                                                configID, selName, cross.getClass().getSimpleName(), 
-                                                mut.getClass().getSimpleName(), surv.getClass().getSimpleName(),
-                                                popSize, maxGen, run, bestFit, (endTime - startTime));
+                                        // Guardar fila individual
+                                        writer.printf("%s;%d;%d;%s;%s;%s;%s;%d;%.4f;%.4f%n",
+                                            configID, 
+                                            popSize,
+                                            maxGen,
+                                            sel.getName(),
+                                            cross.getName(), 
+                                            mut.getName(), 
+                                            surv.getName(),
+                                            run, 
+                                            bestFit,
+                                            cost, 
+                                            (endTime - startTime)
+                                        );
                                             
-                                            stat.fitnesses.add(bestFit);
-                                            stat.totalTime += (endTime - startTime);
-                                        }
-                                        statsMap.put(configID, stat);
+                                        stat.fitnesses.add(bestFit);
+                                        stat.totalTime += (endTime - startTime);
                                     }
+                                    statsMap.put(configID, stat);
                                 }
                             }
                         }
